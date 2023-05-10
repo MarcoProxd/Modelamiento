@@ -1,0 +1,31 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+fx = lambda x: 2*x**3 - 11.7*x**2 + 17.7*x - 5
+dx = lambda x: 6*x**2 - 23.4*x + 17.7
+xi = 0
+columnas = ["iteración","xi","f(xi-)","f'(xi+)","xi+1","error"]
+datos = [[0, 0, 0, 0, xi, 0]]
+df = pd.DataFrame(datos, columns=columnas)
+
+i = 1
+tolerancia = 0.001
+error = 1
+while error > tolerancia:
+    raiz = xi - (fx(xi) / dx(xi))
+    error = np.abs((raiz - xi) / raiz)
+    df = pd.concat([df, pd.DataFrame([[i, xi, fx(xi), dx(xi), raiz, error]], columns=columnas)], ignore_index=True)
+    xi = raiz
+    i += 1
+
+print("El valor de la raíz es:", raiz)
+print("El valor de f(x) es:", fx(raiz))
+df.head(15)
+# Graficar la función y la raíz encontrada
+x = np.linspace(0, 5, 1000)
+y = fx(x)
+plt.plot(x, y, label='Función')
+plt.plot(raiz, fx(raiz), 'ro', label='Raíz')
+plt.legend()
+plt.show()
